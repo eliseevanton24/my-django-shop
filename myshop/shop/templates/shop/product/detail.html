@@ -1,0 +1,66 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image2.png' %}{% endif %}" alt="{{ product.name }}">
+    
+    <h1>{{ product.name }}</h1>
+    <h2>
+        <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
+    </h2>
+
+    <p class="price" id="variant-price">
+        {% if product.variants.first %}
+            {{ product.variants.first.price|floatformat:2 }} ₽
+        {% else %}
+            {{ product.price|floatformat:2 }} ₽
+        {% endif %}
+    </p>
+
+    {{ product.description|linebreaks }}
+
+    <form action="{% url 'cart:cart_add' product.id %}" method="post">
+        {% csrf_token %}
+
+        {% if product.variants.exists %}
+            <label for="variant_id">Размер:</label>
+            <select name="variant_id" id="variant_id" required>
+                {% for variant in product.variants.all %}
+                    <option value="{{ variant.id }}" data-price="{{ variant.price }}">
+                        {{ variant.name }} (в наличии: {{ variant.stock }}) 
+                    </option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <p><strong>Нет доступных размеров.</strong></p>
+        {% endif %}
+
+        <br><br>
+        <label for="id_quantity">Количество:</label>
+        {{ cart_product_form.quantity }}
+        {{ cart_product_form.override }}
+
+        <br><br>
+        <input type="submit" value="Добавить в корзину" class="button">
+    </form>
+</div>
+
+<!-- ✅ JS: смена цены при выборе размера -->
+<script>
+    const select = document.getElementById('variant_id');
+    const priceElement = document.getElementById('variant-price');
+
+    if (select && priceElement) {
+        select.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const price = selectedOption.getAttribute('data-price');
+            priceElement.textContent = parseFloat(price).toFixed(2) + ' ₽';
+        });
+    }
+</script>
+{% endblock %}

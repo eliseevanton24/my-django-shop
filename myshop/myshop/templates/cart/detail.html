@@ -1,0 +1,85 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+    Your shopping cart
+{% endblock %}
+
+{% block content %}
+<h1>Корзина</h1>
+
+{% if cart %}
+<table class="cart">
+    <thead>
+        <tr>
+            <th>Фото</th>
+            <th>Название товара</th>
+            <th>Количество</th>
+            <th>Удалить</th>
+            <th>Цена за шт</th>
+            <th>Сумма</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart %}
+        {% with variant=item.variant %}
+        <tr>
+            <td>
+                <a href="{{ variant.product.get_absolute_url }}">
+                    <img src="{% if variant.product.image %}{{ variant.product.image.url }}{% else %}{% static 'img/no_image2.png' %}{% endif %}" width="80">
+                </a>
+            </td>
+            <td>{{ variant.product.name }} — {{ variant.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+                <form action="{% url 'cart:cart_remove' variant.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="submit" value="Remove" class="button light">
+                </form>
+            </td>
+            <td>{{ item.price }} ₽</td>
+            <td>{{ item.total_price|floatformat:2 }} ₽</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+
+        {% if cart.coupon %}
+        <tr class="subtotal">
+            <td colspan="5" class="text-right"><strong>Промежуточный итог:</strong></td>
+            <td class="num">{{ cart.get_total_price|floatformat:2 }} ₽</td>
+        </tr>
+        <tr>
+            <td>
+                Купон "{{ cart.coupon.code }}" ({{ cart.coupon.discount }}% скидка)
+            </td>
+            <td colspan="4"></td>
+            <td class="num neg">-{{ cart.get_discount|floatformat:"2" }} ₽</td>
+        </tr>
+        {% endif %}
+        <tr class="total">
+            <td colspan="5" class="text-right"><strong>Итого:</strong></td>
+            <td class="num"><strong>{{ cart.get_total_price_after_discount|floatformat:2 }} ₽</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- 💳 Секция: Купон -->
+<div class="coupon-box" style="margin-bottom: 30px; margin-top: 20px;">
+    <form action="{% url 'coupons:apply' %}" method="post" style="display: flex; gap: 10px; align-items: center;">
+        {% csrf_token %}
+        <input type="text" name="code" placeholder="Введите купон" 
+               style="flex: 1; padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;">
+        <input type="submit" value="Применить купон" class="button">
+    </form>
+</div>
+
+<p class="text-right">
+    <a href="{% url 'shop:product_list' %}" class="button light">Продолжить покупки</a>
+    <a href="{% url 'orders:order_create' %}" class="button">Оформить заказ</a>
+</p>
+
+{% else %}
+<p>Ваша корзина пуста</p>
+{% endif %}
+
+{% endblock %}

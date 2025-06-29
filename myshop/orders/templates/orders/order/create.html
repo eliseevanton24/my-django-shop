@@ -1,0 +1,40 @@
+{% extends "shop/base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h1>Оформить заказ</h1>
+<div class="order-container" style="display: flex; gap: 40px; align-items: flex-start;">
+
+    <!-- Форма заказа -->
+    <div class="order-form" style="flex: 1;">
+        <form action="." method="post">
+            {{ form.as_p }}
+            <p><input type="submit" value="Заказать" class="button"></p>
+            {% csrf_token %}
+        </form>
+    </div>
+
+    <!-- Блок с заказом -->
+    <div class="order-summary" style="flex: 1; background: #f7f7f7; padding: 20px; border: 1px solid #ccc;">
+        <h3>Ваш заказ</h3>
+        <ul style="list-style: none; padding-left: 0;">
+            {% for item in cart %}
+            <li style="margin-bottom: 10px;">
+                {{ item.quantity }} x {{ item.variant.product.name }} ({{ item.variant.name }})
+                <span style="float: right;">{{ item.total_price }} ₽</span>
+            </li>
+            {% endfor %}
+
+            {% if cart.coupon %}
+            <li style="margin-bottom: 10px;">
+                Купон "{{ cart.coupon.code }}" ({{ cart.coupon.discount }}% скидка)
+                <span style="float: right; color: red;">-{{ cart.get_discount|floatformat:"2" }} ₽</span>
+            </li>
+            {% endif %}
+        </ul>
+        <hr>
+        <p style="text-align: right;"><strong>Итого: {{ cart.get_total_price_after_discount|floatformat:2 }} ₽</strong></p>
+    </div>
+
+</div>
+{% endblock %}
