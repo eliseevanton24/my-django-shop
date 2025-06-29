@@ -7,16 +7,22 @@ __pycache__/
 
 # Django
 db.sqlite3
-/staticfiles
-/media
+media/
+staticfiles/
+*.log
 
-# Environments
-env/
+# Виртуальное окружение
 venv/
+env/
+
+# Секреты и переменные среды
 .env
 
 # VSCode
 .vscode/
 
-# Byte-compiled / optimized / DLL files
+# macOS системные файлы
+.DS_Store
+
+# Byte-compiled
 *.pyc
