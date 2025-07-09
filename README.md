@@ -27,34 +27,34 @@
 1. Клонировать репозиторий:
    ```bash
    git clone https://github.com/your-username/your-repo.git
-   cd your-repo
+   cd your-repo```
 
 
 2.	Установить зависимости:
    ```bash
    python -m venv venv
    source venv/bin/activate
-   pip install -r requirements.txt
+   pip install -r requirements.txt```
 
 
 3.	Применить миграции:
    ```bash
-   python manage.py migrate
+   python manage.py migrate```
 
 
 4.	Создать суперпользователя:
    ```bash
-   python manage.py createsuperuser
+   python manage.py createsuperuser```
 
 
 5.	Запустить сервер:
    ```bash
-   python manage.py runserver
+   python manage.py runserver```
 
 
 6.	(опционально) Запустить Celery (RabbitMQ должен быть установлен и запущен):
    ```bash
-   celery -A myshop worker -l info
+   celery -A myshop worker -l info```
 
 
 ---
