@@ -31,36 +31,28 @@
 
 
 2.	Установить зависимости:
-  ```bash
   python -m venv venv
   source venv/bin/activate
   pip install -r requirements.txt
 
 
 3.	Применить миграции:
-  ```bash
   python manage.py migrate
 
 
 4.	Создать суперпользователя:
-  ```bash
   python manage.py createsuperuser
 
 
 5.	Запустить сервер:
-  ```bash
   python manage.py runserver
 
 
 6.	(опционально) Запустить Celery (RabbitMQ должен быть установлен и запущен):
-  ```bash
   celery -A myshop worker -l info
 
+---
 
-
-
-
-## Дата: Июль 2025
-## Проект выполнен в рамках учебной практики
+ ## Дата: Июль 2025 
 
    
